@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, createContext, useRef, useEffect } from 'react';
+import './App.scss';
+import { Header } from './components/Header/Header';
+import { MovesButton } from './components/MovesButton/MovesButton';
+import MovableBlock  from './components/MovableBlock/MovableBlock';
+import { NodeType, MindMapContextType } from './types/general';
 
-function App() {
-  const [count, setCount] = useState(0)
+export const MindMapContext = createContext<MindMapContextType | undefined>(undefined);
+
+const initialData: NodeType = {
+  id: '1',
+  text: 'Categories',
+  children: [],
+};
+
+const App: React.FC = () => {
+  const [ mindMapData, setMindMapData ] = useState<NodeType>(initialData);
+  const [ scale, setScale ] = useState<number>(100);
+  const [ threePosition, setThreePosition ] = useState({ left: 0, top: 0 });
+  const blockRef = useRef<HTMLDivElement>(null);
+  const positions = ['top', 'right', 'bottom', 'left'];
+  const centerPosition = () => {
+    if (blockRef.current) {
+      const width = blockRef.current.getBoundingClientRect().width;
+      const initialPosition = { left: window.innerWidth / 2 - width / 2, top: 200 };
+      setThreePosition(initialPosition);
+    }
+  };
+
+  useEffect(() => {
+    centerPosition();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <MindMapContext.Provider value={{ mindMapData, setMindMapData }}>
+      <div className="app">
+        <Header
+          scale={scale}
+          setScale={setScale}
+          centerPosition={centerPosition}
+        />
+        <main className="main">
+          <MovableBlock
+            blockRef={blockRef}
+            threePosition={threePosition}
+            setThreePosition={setThreePosition}
+          />
+          {positions.map((position: string) => 
+              <MovesButton position={position} key={position} />
+            )
+          }
+        </main>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </MindMapContext.Provider>
+  );
 }
 
-export default App
+export default App;

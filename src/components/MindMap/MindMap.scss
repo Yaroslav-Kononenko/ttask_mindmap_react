@@ -1,0 +1,102 @@
+.mindThree > .node {
+
+
+  &::before {
+    display: none;
+  }
+
+  & > .node__text {
+    &::before {
+      display: none;
+    }
+
+    & > .text-box {
+      background-color: white;
+      border: 1px dashed darkgrey;
+      width: 100px;
+      text-align: center;
+    }
+  }
+}
+
+.node {
+  padding: 10px;
+  position: relative;
+  max-width: 150px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(100% + 20px);
+    height: 2px;
+    z-index: 900;
+    background-color: grey;
+    top: -18px;
+    left: 0;
+  }
+
+  &:first-child::before {
+    width: 50%;
+    left: 50%;
+  }
+
+  &:last-child::before {
+    width: 50%;
+    left: 0;
+  }
+
+  &__text {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 43px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: 150;
+      width: 2px;
+      height: 20px;
+      background-color: grey;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: 150;
+      width: 2px;
+      height: 26px;
+      background-color: grey;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &:not(:has(.children)) .node__text::after {
+    display: none;
+  }
+}
+
+.children {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  & > .node:only-child::before {
+    display: none;
+  }
+
+  & > .node .node__text {
+    border: 1px solid #fa885b;
+    background-color: #FFA477;
+  }
+}
+
+.text-box {
+  display: inline-block;
+  padding: 4px;
+}

@@ -1,0 +1,11 @@
+.app {
+  height: 100vh;
+  background: #F6F7FC;
+}
+
+.main {
+  position: relative;
+  height: calc(100vh - 100px);
+  cursor: move;
+  overflow: hidden;
+}
